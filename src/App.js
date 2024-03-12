@@ -11,29 +11,40 @@ const Filter = ({ filter, handleFilterChange }) => {
   );
 };
 
+
+
 const Countries = ({ countries }) => {
+  const [selectedCountry, setSelectedCountry] = useState(null);
+
   return (
     <div>
       {countries.map((country) => (
         <div key={country.name.common}>
-          <h1>{country.name.common}</h1>
-          <p>
-            capital: {country.capital} <br />
-            area: {country.area}
-          </p>
-          <h2>Languages</h2>
-          <ul>
-            <li>
-              {country.languages
-                ? Object.values(country.languages).join(", ")
-                : "Languages not available"}
-            </li>
-          </ul>
-          <img
-            src={country.flags.png}
-            alt={country.name.common}
-            style={{ width: "50px" }}
-          />
+          <h2>{country.name.common}</h2>
+          {selectedCountry === country.name.common && (
+            <div>
+              <p>
+                Capital: {country.capital} <br />
+                Area: {country.area}
+              </p>
+              <h2>Languages</h2>
+              <ul>
+                {country.languages
+                  ? Object.values(country.languages).map((language, index) => (
+                      <li key={index}>{language}</li>
+                    ))
+                  : <li>Languages not available</li>}
+              </ul>
+              <img
+                src={country.flags.png}
+                alt={country.name.common}
+                style={{ width: "50px" }}
+              />
+            </div>
+          )}
+          <button onClick={() => setSelectedCountry(selectedCountry === country.name.common ? null : country.name.common)}>
+            {selectedCountry === country.name.common ? "Hide" : "Show"}
+          </button>
         </div>
       ))}
     </div>
@@ -57,8 +68,8 @@ const App = () => {
         country.name &&
         country.name.common &&
         filter &&
-        typeof country.name.common === 'string' &&
-        typeof filter === 'string' &&
+        typeof country.name.common === "string" &&
+        typeof filter === "string" &&
         country.name.common.toLowerCase().includes(filter.toLowerCase())
     );
     setFilteredCountries(newFilteredCountries);
